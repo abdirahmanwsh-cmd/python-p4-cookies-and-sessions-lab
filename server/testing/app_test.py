@@ -24,16 +24,20 @@ class TestApp:
         with app.test_client() as client:
 
             client.get('/articles/1')
-            assert(flask.session.get('page_views') == 1)
+            with client.session_transaction() as sess:
+                assert sess.get('page_views') == 1
 
             client.get('/articles/2')
-            assert(flask.session.get('page_views') == 2)
+            with client.session_transaction() as sess:
+                assert sess.get('page_views') == 2
 
             client.get('/articles/3')
-            assert(flask.session.get('page_views') == 3)
+            with client.session_transaction() as sess:
+                assert sess.get('page_views') == 3
 
             client.get('/articles/3')
-            assert(flask.session.get('page_views') == 4)
+            with client.session_transaction() as sess:
+                assert sess.get('page_views') == 4
 
     def test_limits_three_articles(self):
         '''returns a 401 with an error message after 3 viewed articles.'''
